@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useState} from 'react';
 import './App.css';
 import moment from 'moment'
 import data from './data/data.json'
@@ -13,7 +13,7 @@ function App() {
   const [title, setTitle] = useState<string>("")
   const [description, setDescription] = useState<string>("")
   const [searchTerm, setSearchTerm] = useState<string>("")
-  
+
   //for form input
   const formInputs = (event: ChangeEvent<HTMLInputElement>): void => {
     if (event.target.name === "title") {
@@ -54,13 +54,29 @@ function App() {
   }
 
   //sorting table
-  const sorted = (): void => {
-    setEmpData([...empData].sort((a: Idata,b: Idata) => {
-      return a.title.localeCompare(b.title)
-    }))
-  }
+  const sorted = (e: ChangeEvent<HTMLSelectElement>): void => {
+    if(e.target.value ==="id"){
+      setEmpData([...empData].sort((a: Idata, b: Idata) => {
+        return a.id > b.id ? 1 : -1
+      }))
+    }
+    if(e.target.value ==="title"){
+      setEmpData([...empData].sort((a: Idata, b: Idata) => {
+        return a.title.localeCompare(b.title)
+      }))
+    }
+    if(e.target.value ==="description"){
+      setEmpData([...empData].sort((a: Idata, b: Idata) => {
+        return a.description.localeCompare(b.description)
+      }))
+    }
+    if(e.target.value ==="createdAt"){
+      setEmpData([...empData].sort((a: Idata, b: Idata) => {
+        return a.createdAt < b.createdAt ? 1 : -1
+      }))
+    }
     
-  
+  }
 
   return (
     <div className="App">
@@ -89,11 +105,21 @@ function App() {
       </div>
       <div className="emp-list mt-4 container">
         <h2 className="text-center">Employee Data</h2>
-        <div className="col-3 mx-auto text-center">
-          <input type="text" className="search form-control m-2" placeholder="Enter Title To Search" onChange={(event) => { setSearchTerm(event.target.value) }
-          } />
-          <span id="validate-search"></span>
-          <Button variant="warning" onClick={sorted}>Sort</Button>
+        <div className="row justify-content-center text-center">
+          <div className="col-4">
+          <label>Search:</label>
+            <input type="text" className="search form-control " placeholder="Enter Title To Search" onChange={(event) => { setSearchTerm(event.target.value) }
+              } /> 
+          </div>
+          <div className="form-group col-4">
+            <label>Sort Using:</label>
+            <select className="form-control" onChange={(event) => {sorted(event)}}>
+              <option value="id">Id</option>
+              <option value="title">Title</option>
+              <option value="description">Description</option>
+              <option value="createdAt">Created At</option>
+            </select>
+          </div>
         </div>
         <div className=" mt-2 table-wrapper-scroll-y my-custom-scrollbar">
           <table className="table">
@@ -107,7 +133,8 @@ function App() {
               </tr>
             </thead>
             <tbody>
-              {empData.filter((val: Idata) => {
+              { // eslint-disable-next-line array-callback-return
+              empData.filter((val: Idata) => {
                 if (searchTerm === "") {
                   return val
                 }
@@ -115,7 +142,7 @@ function App() {
                   return val
                 }
               }).map((emp: Idata, key: number) => {
-                return <Employee key={key} emp={emp} deleteEmp={deleteEmp} />
+                return <Employee key={key} emp={emp} deleteEmp={deleteEmp}/>
               })}
             </tbody>
           </table>

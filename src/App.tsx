@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState} from 'react';
+import React, { ChangeEvent, useState, useEffect} from 'react';
 import './App.css';
 import moment from 'moment'
 import data from './data/data.json'
@@ -13,6 +13,7 @@ function App() {
   const [title, setTitle] = useState<string>("")
   const [description, setDescription] = useState<string>("")
   const [searchTerm, setSearchTerm] = useState<string>("")
+  let count:Number  = 0
 
   //for form input
   const formInputs = (event: ChangeEvent<HTMLInputElement>): void => {
@@ -78,6 +79,18 @@ function App() {
     
   }
 
+  //
+  useEffect(()=> {
+    let element: HTMLElement = document.getElementById("count-search") as HTMLElement
+    if( count === 0 ){
+      console.log("Hello")
+      element.innerHTML = "No records Found"
+    }
+    else{
+      element.innerHTML = ""
+    }
+  })
+
   return (
     <div className="App">
       <div className="container border border-dark p-2 mb-3">
@@ -121,6 +134,7 @@ function App() {
             </select>
           </div>
         </div>
+         <p className="text-center text-danger" id="count-search"></p>
         <div className=" mt-2 table-wrapper-scroll-y my-custom-scrollbar">
           <table className="table">
             <thead>
@@ -142,6 +156,7 @@ function App() {
                   return val
                 }
               }).map((emp: Idata, key: number) => {
+                count = +count + 1
                 return <Employee key={key} emp={emp} deleteEmp={deleteEmp}/>
               })}
             </tbody>

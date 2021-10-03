@@ -5,7 +5,7 @@ import data from './data/data.json'
 import { Idata } from './interfaces'
 import { Button, Form, Col, Row } from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Employee from './employee';
+import Employee from './components/employee';
 
 function App() {
   //initializing states
@@ -49,7 +49,14 @@ function App() {
 
   //delete data object from state
   const deleteEmp = (empTitle: string): void => {
+    let x: number = 0
     setEmpData(empData.filter((emp) => {
+      if( emp.title === empTitle){
+        x = emp.id
+      }
+      if ( emp.id > x){
+        emp.id -= 1
+      }
       return emp.title !== empTitle
     }))
   }

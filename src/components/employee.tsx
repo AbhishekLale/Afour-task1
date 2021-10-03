@@ -1,5 +1,5 @@
 import React from 'react';
-import {Idata} from './interfaces'
+import {Idata} from '../interfaces'
 interface Props{
     emp: Idata,
     deleteEmp(deleteEmp: string): void

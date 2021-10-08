@@ -13,6 +13,8 @@ function App() {
   const [title, setTitle] = useState<string>("")
   const [description, setDescription] = useState<string>("")
   const [searchTerm, setSearchTerm] = useState<string>("")
+  const [titleError, setTitleError] = useState<string>("")
+  const [searchError, setsearchError] = useState<string>("")
   let count:Number  = 0
 
   //for form input
@@ -35,15 +37,14 @@ function App() {
       description: description,
       createdAt: moment().format("DD/MM/YYYY")
     }
-    let element: HTMLElement = document.getElementById("check-title") as HTMLElement
     if (empData.some(e => e.title === newEmp.title)) {
-      element.innerHTML = "Cannot Enter Existing Title"
+      setTitleError("Cannot Enter Existing Title")
     }
     else {
-      setEmpData([newEmp, ...empData])
+      setEmpData([ ...empData,newEmp])
       setTitle("")
       setDescription("")
-      element.innerHTML = ""
+      setTitleError("")
     }
   }
 
@@ -79,22 +80,20 @@ function App() {
       }))
     }
     if(e.target.value ==="createdAt"){
-      setEmpData([...empData].sort((a: Idata, b: Idata) => {
-        return a.createdAt < b.createdAt ? 1 : -1
-      }))
+      setEmpData([...empData].sort((a: Idata, b: Idata) => 
+      a.createdAt.split('/').reverse().join().localeCompare(b.createdAt.split('/').reverse().join())
+      ))
     }
     
   }
 
-  //
+  // eslint-disable-next-line
   useEffect(()=> {
-    let element: HTMLElement = document.getElementById("count-search") as HTMLElement
     if( count === 0 ){
-      console.log("Hello")
-      element.innerHTML = "No records Found"
+      setsearchError("No records Found")
     }
     else{
-      element.innerHTML = ""
+      setsearchError("")
     }
   })
 
@@ -109,13 +108,13 @@ function App() {
                 <Form.Group className="mb-3">
                   <Form.Label className="form-label">Employee Role</Form.Label>
                   <Form.Control type="text" placeholder="Title" name="title" onChange={formInputs} value={title} required />
-                  <Form.Label id="check-title" className="text-danger"></Form.Label>
+                  <Form.Label id="check-title" className="text-danger">{titleError}</Form.Label>
                 </Form.Group>
                 <Form.Group className="mb-3">
                   <Form.Label className="form-label">Role Description</Form.Label>
                   <Form.Control type="text" placeholder="Description" name="description" onChange={formInputs} value={description} required />
                 </Form.Group>
-                <Button variant="primary" type="submit">
+                <Button variant="primary" type="submit" disabled={!title.trim() || !description.trim()}>
                   Submit
                 </Button>
               </Col>
@@ -141,7 +140,7 @@ function App() {
             </select>
           </div>
         </div>
-         <p className="text-center text-danger" id="count-search"></p>
+         <p className="text-center text-danger" id="count-search">{searchError}</p>
         <div className=" mt-2 table-wrapper-scroll-y my-custom-scrollbar">
           <table className="table">
             <thead>
